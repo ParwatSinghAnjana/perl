@@ -6386,7 +6386,7 @@ S_utf8_mg_pos_cache_update(pTHX_ SV *const sv, MAGIC **const mgp, const STRLEN b
     }
     assert(cache);
 
-    if (PL_utf8cache < 0 && SvPOKp(sv)) {
+    if (PL_utf8cache < 0 && SvPOKp(sv) && byte < blen) { /* RT#75898: We could be trying to offset past the end of the string. */
 	/* SvPOKp() because it's possible that sv has string overloading, and
 	   therefore is a reference, hence SvPVX() is actually a pointer.
 	   This cures the (very real) symptoms of RT 69422, but I'm not actually
