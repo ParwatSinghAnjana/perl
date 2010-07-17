@@ -36,7 +36,7 @@ BEGIN {
 }
 
 require "test.pl";
-plan( tests => 47 );
+plan( tests => 48 );
 
 my $ok;
 
@@ -978,3 +978,9 @@ cmp_ok($ok,'==',1,'dynamically scoped');
     cmp_ok("@a37725",'eq',"5 4 3 2",'bug 27725: reverse with empty slots bug');
 }
 
+{
+    # RT#3112
+    fresh_perl_is(<<'EOI', 'ok', { }, 'last in push');
+        for (1, 2) { push @a, last } print "ok"
+EOI
+}

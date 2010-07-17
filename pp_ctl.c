@@ -2292,7 +2292,8 @@ PP(pp_last)
     }
     else if (gimme == G_ARRAY) {
 	while (++MARK <= SP) {
-	    *++newsp = ((pop2 == CXt_SUB) && SvTEMP(*MARK))
+	    *++newsp = ((pop2 == CXt_SUB && SvTEMP(*MARK))
+                        || SvTYPE(*MARK) == SVt_PVAV)
 			? *MARK : sv_mortalcopy(*MARK);
 	    TAINT_NOT;		/* Each item is independent */
 	}
