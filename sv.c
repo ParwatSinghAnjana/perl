@@ -7508,6 +7508,7 @@ Perl_sv_inc_nomg(pTHX_ register SV *const sv)
     while (isALPHA(*d)) d++;
     while (isDIGIT(*d)) d++;
     if (d < SvEND(sv)) {
+	NV tofloat;
 #ifdef PERL_PRESERVE_IVUV
 	/* Got to punt this as an integer if needs be, but we don't issue
 	   warnings. Probably ought to make the sv_iv_please() that does
@@ -7543,7 +7544,12 @@ Perl_sv_inc_nomg(pTHX_ register SV *const sv)
 #endif
 	}
 #endif /* PERL_PRESERVE_IVUV */
-	sv_setnv(sv,Atof(SvPVX_const(sv)) + 1.0);
+
+	d = SvPVX_const(sv);
+	tofloat = Atof(d);
+	if (tofloat == 0.0 && *d != '0' && *d != '.')
+	    not_a_number(sv);
+	sv_setnv(sv, tofloat + 1.0);
 	return;
     }
     d--;
