@@ -3,7 +3,7 @@ BEGIN {
     @INC = '../lib';
     require './test.pl';
 }
-plan tests=>71;
+plan tests=>72;
 
 sub a : lvalue { my $a = 34; ${\(bless \$a)} }  # Return a temporary
 sub b : lvalue { ${\shift} }
@@ -569,4 +569,21 @@ Execution of - aborted due to compilation errors.
     sub lval_decl { $x }
     lval_decl = 5;
     is($x, 5, "subroutine declared with lvalue before definition retains lvalue. [perl #68758]");
+}
+
+{
+    my $result_3363;
+    sub a_3363 {
+        my ($word, $replace) = @_;
+        my $ref = \substr($word, 0, 1);
+        $$ref = $replace;
+        if ($replace eq "b") {
+            $result_3363 = $word;
+        } else {
+            a_3363($word, "b");
+        }
+    }
+    a_3363($_, "v") for "test";
+
+    is($result_3363, "best", "ref-to-substr retains lvalue-ness under recursion [perl #3363]");
 }
