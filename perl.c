@@ -2765,7 +2765,7 @@ Perl_eval_pv(pTHX_ const char *p, I32 croak_on_error)
 
     PERL_ARGS_ASSERT_EVAL_PV;
 
-    eval_sv(sv, G_SCALAR);
+    eval_sv(sv, G_SCALAR | G_KEEPERR);
     SvREFCNT_dec(sv);
 
     SPAGAIN;
